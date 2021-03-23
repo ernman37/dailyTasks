@@ -9,8 +9,9 @@ UO='\033[4;33m'
 UG='\033[4;32m'
 
 #stores date and goal destination of file for the day
+cd ~/codeProjects/bash/today
 today=$(date +%b-%d-%Y)
-file=$(pwd)/dates/$today.txt
+file="$(pwd)/dates/$today.txt"
 
 #start program
 begin(){
@@ -18,9 +19,10 @@ begin(){
    then
       run="t"
    else #It doesn't exist
-      g++ -std=c++17 -o tasks tasks.cpp
-      touch $file
-      ./tasks $file #gets user input for file
+      g++ -std=c++17 -o tasks ~/codeProjects/bash/today/tasks.cpp
+      touch $today.txt
+      mv $today.txt ~/codeProjects/bash/today/dates
+      ~/codeProjects/bash/today/tasks $file #gets user input for file
       run="f"
    fi
    list
@@ -125,7 +127,7 @@ remove(){
       list
       getOpt
    fi
-   removed=$(./tasks $file $delete)
+   removed=$(~/codeProjects/bash/today/tasks $file $delete)
    mv copy.txt $file
    echo -e "${G}Completed task${O}$removed${G}"
    echo
@@ -134,4 +136,4 @@ remove(){
 
 #Start of the progarm:) so simple and beautiful
 begin
-
+cd - &> error
