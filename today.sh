@@ -1,4 +1,5 @@
 #!/bin/bash
+#Colors for output
 NO='\033[0m'
 R='\033[0;31m'
 G='\033[0;32m'
@@ -6,39 +7,47 @@ O='\033[0;33m'
 P='\033[0;35m'
 UO='\033[4;33m'
 UG='\033[4;32m'
+
+#stores date and goal destination of file for the day
 today=$(date +%b-%d-%Y)
 file=$(pwd)/dates/$today.txt
 
+#start program
 begin(){
-   if [[ -f "$file" ]]; 
+   if [[ -f "$file" ]]; #File exists
    then
       run="t"
-   else
+   else #It doesn't exist
       g++ -std=c++17 -o tasks tasks.cpp
       touch $file
-      ./tasks $file
+      ./tasks $file #gets user input for file
       run="f"
    fi
    list
    if [ "$run" == "f" ];
    then
-      exit
+      exit #only on creation of file
    fi
+   getOpt
 }
+
+#how many lines are in goals file
 count(){
    let i=0
    while read -r line
    do
       let i=$i+1
    done < $file
-   echo $i
+   echo $i #grabs echo
 }
+
+#lists what is inside of goals file
 list(){
-   if [ $(count) == "0" ] 
+   if [ $(count) == "0" ] #0 lines in file 
    then
       echo -e "${R}No Current Tasks for ${UO}$today${NO}"
       exit
-   else
+   else #More than 0 lines 
       echo -e "${G}Tasks for ${UO}$today${G} are...${O}"
       while read -r line
       do
@@ -46,11 +55,13 @@ list(){
       done < $file
    fi
 }
+
+#gets options for file modification/output
 getOpt(){
    echo -e "${UO}Options are:\n${UG}1.${O} add task    ${UG}2.${O} remove task\n${UG}3.${O} print       ${UG}4.${O} exit${G}"
-   read -p "Enter #: " option
+   read -p "Enter #: " option #gets option
    echo
-   if [ $option == ""] &> error
+   if [ $option == ""] &> error #always a error message when comparing if empty
    then
       echo -e "${G}Done"
       exit
@@ -65,11 +76,13 @@ getOpt(){
       list
       echo
       getOpt
-   else
+   else #exits on anything that isnt a selected option
       echo -e "${G}Done"
       exit
    fi
 }
+
+#adds new goal to file
 add(){
    echo -e "${G}ADDING..."
    let lines=$(count)+1
@@ -84,6 +97,8 @@ add(){
    echo
    getOpt
 }
+
+#removes certain index
 remove(){
    echo -e "${R}REMOVING..."
    list
@@ -95,19 +110,20 @@ remove(){
       exit
    fi
    read -p "Index to remove: " delete
+   let d=$delete
    if [ "$delete" == "" ];
    then
       return
-   elif [ "$delete" == "0" ];
+   elif [ $d -lt 1 ] &> error #cant delete anything below 1 option
    then
-      getopt
+      getOpt
    fi
    let delete=$delete
    if [[ $delete > $lines ]];
    then
       echo -e "${R}Index $delete out of bounds, list length = $lines${NO}"
       list
-      exit
+      getOpt
    fi
    removed=$(./tasks $file $delete)
    mv copy.txt $file
@@ -116,6 +132,6 @@ remove(){
    getOpt
 }
 
+#Start of the progarm:) so simple and beautiful
 begin
-getOpt
 
