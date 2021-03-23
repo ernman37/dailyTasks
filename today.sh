@@ -11,7 +11,7 @@ UG='\033[4;32m'
 #stores date and goal destination of file for the day
 cd ~/codeProjects/bash/today
 today=$(date +%b-%d-%Y)
-file="$(pwd)/dates/$today.txt"
+file="$(pwd)/.dates/$today.txt"
 
 #start program
 begin(){
@@ -19,10 +19,10 @@ begin(){
    then
       run="t"
    else #It doesn't exist
-      g++ -std=c++17 -o tasks ~/codeProjects/bash/today/tasks.cpp
+      g++ -std=c++17 -o .tasks ~/codeProjects/bash/today/.tasks.cpp
       touch $today.txt
-      mv $today.txt ~/codeProjects/bash/today/dates
-      ~/codeProjects/bash/today/tasks $file #gets user input for file
+      mv $today.txt ~/codeProjects/bash/today/.dates/
+      ~/codeProjects/bash/today/.tasks $file #gets user input for file
       run="f"
    fi
    list
@@ -63,7 +63,7 @@ getOpt(){
    echo -e "${UO}Options are:\n${UG}1.${O} add task    ${UG}2.${O} remove task\n${UG}3.${O} print       ${UG}4.${O} exit${G}"
    read -p "Enter #: " option #gets option
    echo
-   if [ $option == ""] &> error #always a error message when comparing if empty
+   if [ $option == ""] &> .error #always a error message when comparing if empty
    then
       echo -e "${G}Done"
       exit
@@ -104,7 +104,7 @@ add(){
 remove(){
    echo -e "${R}REMOVING..."
    list
-   touch copy.txt
+   touch '.copy.txt'
    let lines=$(count)
    if [ $lines == 0 ];
    then
@@ -116,7 +116,7 @@ remove(){
    if [ "$delete" == "" ];
    then
       return
-   elif [ $d -lt 1 ] &> error #cant delete anything below 1 option
+   elif [ $d -lt 1 ] &> .error #cant delete anything below 1 option
    then
       getOpt
    fi
@@ -127,7 +127,7 @@ remove(){
       list
       getOpt
    fi
-   removed=$(~/codeProjects/bash/today/tasks $file $delete)
+   removed=$(~/codeProjects/bash/today/.tasks $file $delete)
    mv copy.txt $file
    echo -e "${G}Completed task${O}$removed${G}"
    echo
@@ -136,4 +136,4 @@ remove(){
 
 #Start of the progarm:) so simple and beautiful
 begin
-cd - &> error
+cd - &> .error

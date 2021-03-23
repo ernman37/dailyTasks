@@ -1,0 +1,5 @@
+1. Email teachers
+2. Math quiz
+3. C++ lab
+4. C++ quiz
+5. clean
